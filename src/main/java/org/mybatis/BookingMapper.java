@@ -1,5 +1,7 @@
 package org.mybatis;
 
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface BookingMapper {
@@ -11,4 +13,7 @@ public interface BookingMapper {
     Booking getBookingById(int bookingIdToModify);
 
     int getLastLocationNumber();
+    void loadXmlData(String xmlFilePath);
+
+    void saveDataToCsv(String csvFilePath);
 }

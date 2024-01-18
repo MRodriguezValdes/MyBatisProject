@@ -2,9 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.mybatis.BookingMapper" >
-
-
+<mapper namespace="org.mybatis.BookingMapper">
 
 
     <!-- Consulta para insertar una reserva -->
@@ -64,4 +62,19 @@
         FROM bookings
         ORDER BY id DESC LIMIT 1
     </select>
+
+    <insert id="loadXmlData">
+        <![CDATA[
+        LOAD
+        XML LOCAL INFILE '${xmlFile}' INTO TABLE bookings ROWS IDENTIFIED BY '<booking>';
+        ]]>
+    </insert>
+
+    <update id="saveDataToCsv">
+        SELECT *
+        INTO OUTFILE #{csvFilePath}
+    FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+    LINES TERMINATED BY '\n'
+        FROM bookings;
+    </update>
 </mapper>

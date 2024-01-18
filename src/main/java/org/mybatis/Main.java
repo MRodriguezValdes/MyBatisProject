@@ -36,10 +36,14 @@ public class Main implements BookingMapper {
 
             switch (option) {
                 case 1:
-
+                    System.out.print("Enter the XML file path: ");
+                    String xmlFilePath = scanner.nextLine();
+                    main.loadXmlData(xmlFilePath);
                     break;
                 case 2:
-
+                    System.out.print("Enter the CSV file path: ");
+                    String csvFilePath = scanner.nextLine();
+                    main.saveDataToCsv(csvFilePath);
 
                     break;
                 case 3:
@@ -49,7 +53,7 @@ public class Main implements BookingMapper {
                     main.insertBooking(main.createNewBooking());
                     break;
                 case 5:
-                    System.out.print("Inserte el id de la reserva que desea borrar"+"\n");
+                    System.out.print("Inserte el id de la reserva que desea borrar" + "\n");
                     main.deleteBookingById(scanner.nextInt());
                     scanner.nextLine();
                     break;
@@ -68,15 +72,6 @@ public class Main implements BookingMapper {
         } while (option != 0);
     }
 
-    private void loadXmlData(String xmlFilePath, BookingMapper bookingMapper) {
-        // Implement logic to load data from an XML file
-        System.out.println("Loading data from " + xmlFilePath);
-    }
-
-    private void saveDataToCsv(String csvFilePath, BookingMapper bookingMapper) {
-        // Implement logic to save data to a CSV file
-        System.out.println("Saving data to " + csvFilePath);
-    }
 
     private void printMainMenu() {
         System.out.println("Main Menu:");
@@ -90,37 +85,37 @@ public class Main implements BookingMapper {
         System.out.print("Select an option: ");
     }
 
-    private Booking createNewBooking(){
+    private Booking createNewBooking() {
         Booking newBooking = new Booking();
         newBooking.setLocation_number(this.getLastLocationNumber() + 1);
         System.out.println("Creando nueva reserva.......");
         System.out.println("__________________________________________");
-        System.out.print("Inserta el id del cliente:"+"\n");
+        System.out.print("Inserta el id del cliente:" + "\n");
         newBooking.setClientId(scanner.nextInt());
         scanner.nextLine();
-        System.out.print("Inserta el nombre de cliente:"+"\n");
+        System.out.print("Inserta el nombre de cliente:" + "\n");
         newBooking.setClient(scanner.nextLine());
-        System.out.print("Inserta el nombre de la agencia:"+"\n");
+        System.out.print("Inserta el nombre de la agencia:" + "\n");
         newBooking.setAgency(scanner.nextLine());
-        System.out.print("Inserta el id de la agencia:"+"\n");
+        System.out.print("Inserta el id de la agencia:" + "\n");
         newBooking.setId_agency(scanner.nextInt());
         scanner.nextLine();
-        System.out.print("Inserta el precio de la reserva:"+"\n");
+        System.out.print("Inserta el precio de la reserva:" + "\n");
         newBooking.setPrice(scanner.nextDouble());
         scanner.nextLine();
-        System.out.print( "Inserta el id de la habitación:"+"\n");
+        System.out.print("Inserta el id de la habitación:" + "\n");
         newBooking.setId_type(scanner.nextLine());
-        System.out.print("Inserta el tipo de habitación:"+"\n");
+        System.out.print("Inserta el tipo de habitación:" + "\n");
         newBooking.setRoom(scanner.nextLine());
-        System.out.print("Inserta el nombre del hotel:"+"\n");
+        System.out.print("Inserta el nombre del hotel:" + "\n");
         newBooking.setHotel(scanner.nextLine());
-        System.out.print( "Inserta el id del hotel:"+"\n");
+        System.out.print("Inserta el id del hotel:" + "\n");
         newBooking.setId_hotel(scanner.nextInt());
         scanner.nextLine();
-        System.out.print("Inserta el número de noches:"+"\n");
+        System.out.print("Inserta el número de noches:" + "\n");
         newBooking.setRoom_nights(scanner.nextInt());
         scanner.nextLine();
-        System.out.print("Insera fecha de check-in:"+"\n");
+        System.out.print("Insera fecha de check-in:" + "\n");
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         String date = scanner.nextLine();
         try {
@@ -131,6 +126,7 @@ public class Main implements BookingMapper {
         System.out.println("__________________________________________");
         return newBooking;
     }
+
     @Override
     public void insertBooking(Booking booking) {
         try {
@@ -152,21 +148,7 @@ public class Main implements BookingMapper {
 
             int option;
             do {
-                System.out.println("\nUpdate Options:");
-                System.out.println("1. Update Location Number");
-                System.out.println("2. Update Client ID");
-                System.out.println("3. Update Client");
-                System.out.println("4. Update Agency");
-                System.out.println("5. Update Agency ID");
-                System.out.println("6. Update Price");
-                System.out.println("7. Update Type ID");
-                System.out.println("8. Update Room");
-                System.out.println("9. Update Hotel ID");
-                System.out.println("10. Update Hotel");
-                System.out.println("11. Update Check-In Date");
-                System.out.println("12. Update Room Nights");
-                System.out.println("13. Finish Updating");
-                System.out.print("Select an option: ");
+                printEditMenu();
 
                 option = scanner.nextInt();
                 scanner.nextLine();  // Clear the newline character from the buffer
@@ -313,6 +295,29 @@ public class Main implements BookingMapper {
         return bookingMapper.getLastLocationNumber();
     }
 
+    @Override
+    public void loadXmlData(String xmlFilePath) {
+        try {
+            bookingMapper.loadXmlData(xmlFilePath);
+            session.commit();
+            System.out.println("XML data loaded successfully!");
+        } catch (Exception e) {
+            session.rollback();
+            e.printStackTrace();
+            System.out.println("Error loading XML data. Rolling back changes.");
+        }
+
+    }
+
+    @Override
+    public void saveDataToCsv(String csvFilePath) {
+        try {
+            bookingMapper.saveDataToCsv(csvFilePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void printBooking(Booking booking) {
         System.out.println("Booking Details:");
         System.out.println("ID: " + booking.getId());
@@ -328,6 +333,24 @@ public class Main implements BookingMapper {
         System.out.println("Hotel: " + booking.getHotel());
         System.out.println("Check-In Date: " + booking.getCheck_in());
         System.out.println("Room Nights: " + booking.getRoom_nights());
+    }
+
+    private void printEditMenu() {
+        System.out.println("\nUpdate Options:");
+        System.out.println("1. Update Location Number");
+        System.out.println("2. Update Client ID");
+        System.out.println("3. Update Client");
+        System.out.println("4. Update Agency");
+        System.out.println("5. Update Agency ID");
+        System.out.println("6. Update Price");
+        System.out.println("7. Update Type ID");
+        System.out.println("8. Update Room");
+        System.out.println("9. Update Hotel ID");
+        System.out.println("10. Update Hotel");
+        System.out.println("11. Update Check-In Date");
+        System.out.println("12. Update Room Nights");
+        System.out.println("13. Finish Updating");
+        System.out.print("Select an option: ");
     }
 
 
